@@ -16,8 +16,8 @@ dotenv.config();
 connectDB();
 job.start();
 
-const PORT = process.env.PORT || 3000;
-const __dirname = path.resolve();
+const PORT = process.env.PORT || 8000;
+let __dirname = path.resolve();
 
 cloudinary.config({
 	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -36,8 +36,19 @@ app.use("/api/posts", postRoutes);
 app.use("/api/messages", messageRoutes);
 
 // http://localhost:5000 => backend,frontend
-
+// app.use(express.static(path.join(__dirname, "../frontend/dist")));
+// app.get("*", (req, res) => {
+// 	res.sendFile(path.resolve(__dirname,"../frontend/dist/index.html"));
+// });
 if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+	// react app
+	app.get("*", (req, res) => {
+		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+	});
+}
+else{
 	app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
 	// react app
